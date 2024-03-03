@@ -24,7 +24,7 @@
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm" aria-label="Main navigation">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/home') }}">Web Board</a>
+                <a class="navbar-brand">Web Board</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,7 +41,6 @@
                         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" type= "get" action="{{ url('search') }}">
                             <input type="search" class="form-control form-control-white text-bg-white" name="query" type="search" placeholder="Search..." aria-label="Search">
                         </form>
-                        <a href="{{ route('editprofile') }}"><button type="button" class="btn btn-secondary" >My Profile</button></a>
                         <!-- Authentication Links -->
                         @guest
                         @if (Route::has('login'))
@@ -62,6 +61,15 @@
                             </button>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                                <a class="dropdown-item" href="{{ url('/editprofile')}}">
+                                    {{ __('Profile') }}
+                                </a>
+
+                                <a class="dropdown-item" href="{{ url('/posts')}}">
+                                    {{ __('My Posts') }}
+                                </a>
+
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}

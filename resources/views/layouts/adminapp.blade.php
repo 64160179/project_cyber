@@ -69,11 +69,7 @@
                                 <a class="dropdown-item" href="{{ url('/editprofile')}}">
                                     {{ __('Profile') }}
                                 </a>
-
-                                <a class="dropdown-item" href="{{ url('/editprofile')}}">
-                                    {{ __('My Posts ยังไม่เสร็จ') }}
-                                </a>
-
+                                
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}

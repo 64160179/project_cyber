@@ -53,15 +53,6 @@ Route::get('/editprofile', [App\Http\Controllers\HomeController::class, 'editPro
 Route::post('/update-name', [App\Http\Controllers\UserController::class, 'updateName'])->name('update-name');
 Route::post('/update-password', [App\Http\Controllers\UserController::class, 'updatePassword'])->name('update-password');
 
-Route::controller(App\Http\Controllers\CategoryController::class)->group(function () {
-    Route::get('categories', 'index');
-    Route::get('categories/create', 'create');
-    Route::post('categories/create', 'store');
-    Route::get('categories/{id}/edit', 'edit');
-    Route::put('categories/{id}/edit', 'update');
-    Route::get('categories/{id}/delete', 'destroy');
-});
-
 Route::controller(App\Http\Controllers\PostsController::class)->group(function () {
     Route::get('posts', 'index');
     Route::get('posts/create', 'create');

@@ -27,6 +27,8 @@ class PostsController extends Controller
             'topic' => 'required|max:100|string',
             'details' => 'required',
             'post_pic' => 'nullable|image|mimes:jpeg,png,jpg',
+            'users_id' => 'required',
+            'users_name' => 'required',
 
         ]);
 
