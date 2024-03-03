@@ -26,6 +26,13 @@ class CreateUsersSeeder extends Seeder
 
             ],
             [
+                'name' => 'Adminrakna',
+                'email' => 'adminrakna@admin.com',
+                'isAdmin' => '1',
+                'password' => bcrypt('$erver@dmin')
+
+            ],
+            [
                 'name' => 'User',
                 'email' => 'user@user.com',
                 'isAdmin' => '0',

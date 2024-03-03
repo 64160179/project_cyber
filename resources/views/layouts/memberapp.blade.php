@@ -24,11 +24,11 @@
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm" aria-label="Main navigation">
             <div class="container">
-                <a class="navbar-brand">Web Board</a>
+                <a class="navbar-brand" href="{{ url('/') }}">Web Board</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a href="{{ url('/posts/create')}}"><button type="button" class="btn btn-primary" data-bs-target="#exampleModal">+ เพิ่มกระทู้</button></a>
+                <a href="{{ url('/posts/create') }}"><button type="button" class="btn btn-primary" data-bs-target="#exampleModal">+ เพิ่มกระทู้</button></a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
@@ -45,20 +45,20 @@
                         @guest
                         @if (Route::has('login'))
                         <li class="nav-item">
-                            <a href="{{ route('login') }}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
                         </li>
                         @endif
 
                         @if (Route::has('register'))
                         <li class="nav-item">
-                            <a href="{{ route('register') }}"><button type="button" class="btn btn-warning">Register</button></a>
+                            <a class="nav-link" href="{{ route('register') }}">Register</a>
                         </li>
                         @endif
                         @else
                         <li class="nav-item dropdown">
-                            <button id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
-                            </button>
+                            </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
@@ -81,7 +81,7 @@
                             </div>
                         </li>
                         @endguest
-                        
+
                     </ul>
                 </div>
             </div>
@@ -91,6 +91,8 @@
             @yield('content')
         </main>
     </div>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

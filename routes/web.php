@@ -3,6 +3,8 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +20,8 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $posts = App\Models\Posts::all(); // หรือเลือกตามเงื่อนไขที่ต้องการ
+    return view('welcome', compact('posts'));
 });
 
 Route::get('/editprofile', function () {
@@ -46,6 +49,14 @@ Route::get('/editprofile', [App\Http\Controllers\HomeController::class, 'editPro
 Route::post('/update-name', [App\Http\Controllers\UserController::class, 'updateName'])->name('update-name');
 Route::post('/update-password', [App\Http\Controllers\UserController::class, 'updatePassword'])->name('update-password');
 
+Route::post('posts/{posts}/comment', [App\Http\Controllers\PostsController::class, 'comment'])->name('post.comment');
+Route::post('comments/{post}', [\App\Http\Controllers\CommentController::class, 'store'])->name('comment');
+Route::get('comment/{comment}/edit', [App\Http\Controllers\CommentController::class, 'edit'])->name('comment.edit');
+Route::put('comments/{comment}', [\App\Http\Controllers\CommentController::class, 'update'])->name('comment.update');
+Route::delete('comment/{comment}', [App\Http\Controllers\CommentController::class, 'destroy'])->name('comment.destroy');
+
+
+
 Route::controller(App\Http\Controllers\PostsController::class)->group(function () {
     Route::get('posts', 'index');
     Route::get('posts/create', 'create');
@@ -56,4 +67,11 @@ Route::controller(App\Http\Controllers\PostsController::class)->group(function (
     Route::get('search', 'search');
 });
 
+Route::controller(App\Http\Controllers\UserController::class)->group(function () {
+    Route::get('user', 'index');
+    Route::get('user/{id}/edit', 'edit');
+    Route::put('user/{id}/edit', 'update');
+    Route::get('user/{id}/delete', 'destroy');
+    Route::get('searchuser', 'search');
+});
 

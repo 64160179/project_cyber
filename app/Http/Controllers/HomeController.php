@@ -26,7 +26,8 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('home');
+        $posts = Posts::get();
+        return view('home', compact('posts'));
     }
     
     /**
@@ -47,7 +48,7 @@ class HomeController extends Controller
     }
     public function editProfile()
     {
-        return view('editProfile');
+        return view('editprofile');
     }
     public function createImage()
     {
@@ -62,6 +63,17 @@ class HomeController extends Controller
         ]);
 
         return redirect()->back()->with('name', 'Username has been updated');
+    }
+
+    public function search()
+    {
+        $search_text = $_GET['query'];
+        $posts = Posts::where('topic', 'LIKE', '%' . $search_text . '%')
+              ->orWhere('users_name', 'LIKE', '%' . $search_text . '%')
+              ->get();
+
+
+        return view('posts.index',compact('posts'));
     }
 
 }

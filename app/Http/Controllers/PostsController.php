@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\Posts;
+use App\Models\Comment;
 
 class PostsController extends Controller
 {
@@ -27,12 +28,13 @@ class PostsController extends Controller
             'topic' => 'required|max:100|string',
             'details' => 'required',
             'post_pic' => 'nullable|image|mimes:jpeg,png,jpg',
-            'users_id' => 'required',
-            'users_name' => 'required',
 
         ]);
 
-        if($request->has('post_pic')){
+        $path = ''; // Initialize path as empty string
+        $filename = ''; // Initialize filename as empty string
+
+        if($request->hasFile('post_pic')){
 
             $file = $request->file('post_pic');
             $extension = $file->getClientOriginalExtension();
@@ -83,7 +85,12 @@ class PostsController extends Controller
                 File::delete($posts->post_pic);
             }
         }
-    
+        
+        $posts->update([
+            'topic' => $request->topic,
+            'details' => $request->details,
+        ]);
+
         $updateData = [
             'topic' => $request->topic,
             'details' => $request->details,
@@ -111,7 +118,13 @@ class PostsController extends Controller
         return redirect()->back()->with('status','Posts Deleted');
     }
 
-    public function search()
+    public function comment(Posts $post)
+    {
+        $comments = $post->comments; // ดึงความคิดเห็นของโพสต์ที่กำหนดมา
+        return view('posts.comment', compact('comments')); // แก้เป็น 'comments' แทน 'comment'
+    }
+
+    public function searchpost()
     {
         $search_text = $_GET['query'];
         $posts = Posts::where('topic', 'LIKE', '%' . $search_text . '%')

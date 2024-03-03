@@ -1,96 +1,81 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.memberapp')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>Web Board</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-</head>
-
-<body>
-    <div id="app">
-
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm" aria-label="Main navigation">
-            <div class="container">
-                <a class="navbar-brand">Web Board</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a href="{{ url('/posts/create')}}"><button type="button" class="btn btn-primary" data-bs-target="#exampleModal">+ เพิ่มกระทู้</button></a>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-
-                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" type= "get" action="{{ url('search') }}">
-                            <input type="search" class="form-control form-control-white text-bg-white" name="query" type="search" placeholder="Search..." aria-label="Search">
-                        </form>
-                        <!-- Authentication Links -->
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a href="{{ route('login') }}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
-                        </li>
+@section('content')
+<main class="container">
+    <div>
+        <h3>กระทู้</h3>
+        <table class="table table-bordered table-striped">
+            @foreach ($posts as $item)
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $item->topic }}</h5>
+                        <!-- Check if the current user owns the post -->
+                        @if(auth()->user() && $item->users_id === auth()->user()->id)
+                        <!-- Edit Post Button -->
+                        <a href="{{ url('posts/'.$item->id.'/edit') }}" class="btn btn-sm btn-warning">Edit</a>
+                        <!-- Delete Post Form -->
+                        <a href="{{ url('posts/'.$item->id.'/delete') }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure ?')">
+                            Delete
+                        </a>
+                        @endif
+                        <p class="card-text">Posted by: {{ $item->users_name }}</p>
+                        <p class="card-text">{{ $item->details }}</p>
+                        @if($item->post_pic)
+                        <img src="{{ asset($item->post_pic) }}" alt="Post Image">
                         @endif
 
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a href="{{ route('register') }}"><button type="button" class="btn btn-warning">Register</button></a>
+                        @if($item->comments->count() > 0)
+                        @foreach ($item->comments as $comment)
+                        <li class="list-group-item">
+                            <p>{{ $comment->user->name }} : {{ $comment->comment_text }}</p>
+                            @if($comment->comment_pic)
+                            <img src="{{ asset($comment->comment_pic) }}" alt="Comment Image" style="width: 100px; height: 100px;">
+                            @endif
+
+                            <!-- Check if the current user is the owner of the comment -->
+                            @if(auth()->user() && $comment->users_id === auth()->user()->id)
+                            <!-- Edit Comment Button -->
+                            <a href="{{ route('comment.edit', ['comment' => $comment->id]) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                            <!-- Delete Comment Form -->
+                            <form action="{{ route('comment.destroy', ['comment' => $comment->id]) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                            @endif
                         </li>
-                        @endif
+                        @endforeach
                         @else
-                        <li class="nav-item dropdown">
-                            <button id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </button>
+                        <p>No comments yet.</p>
+                        @endif
 
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
-                                <a class="dropdown-item" href="{{ url('/editprofile')}}">
-                                    {{ __('Profile') }}
-                                </a>
-
-                                <a class="dropdown-item" href="{{ url('/posts')}}">
-                                    {{ __('My Posts') }}
-                                </a>
-
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
+                        <form action="{{ route('comment', ['post' => $item->id]) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="comment_text" class="form-label">Comment</label>
+                                <textarea class="form-control @error('comment_text') is-invalid @enderror" id="comment_text" name="comment_text" rows="3" required></textarea>
+                                @error('comment_text')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                        </li>
-                        @endguest
-                        
-                    </ul>
+                            <div class="mb-3">
+                                <input type="file" class="form-control @error('comment_pic') is-invalid @enderror" id="comment_pic" name="comment_pic">
+                                @error('comment_pic')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <input type="hidden" name="post_id" value="{{ $item->id }}">
+                            <button type="submit" class="btn btn-primary">Post Comment</button>
+                        </form>
+
+                    </div>
                 </div>
             </div>
-        </nav>
+            @endforeach
 
-        <main class="py-4">
-            <h1>Web Board</h1>
-        </main>
+        </table>
     </div>
-</body>
-
-</html>
+</main>
+@endsection
