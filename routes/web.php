@@ -1,15 +1,8 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ShowImageController;
 use App\Http\Controllers\PostsController;
-use App\Http\Controllers\AdminPostsController;
-use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\UserController;
-use App\Models\Posts;
-use App\Models\AdminPosts;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
