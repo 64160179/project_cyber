@@ -25,7 +25,7 @@
                             @foreach ($posts as $post)
                             <tr>
                                 <td>{{$post->id}}</td>
-                                <td>{{$post->user_name}}</td>
+                                <td>{{$post->users_name}}</td>
                                 <td>{{$post->topic}}</td>
                                 <td>{{$post->details}}</td>
                                 <td>
