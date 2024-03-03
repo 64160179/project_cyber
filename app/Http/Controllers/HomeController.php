@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\AdminPostsController;
+use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\User;
 use App\Models\Posts;
 
@@ -21,16 +23,24 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+
+    public function index()
+    {
+        return view('home');
+    }
+    
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function adminPosts()
     {
-        $posts = Posts::get();
-        return view('home', compact('posts'));
+        $posts = Posts::get(); // ดึงข้อมูลทั้งหมดจากตาราง posts ในฐานข้อมูล
+        return view('admin.posts', compact('posts')); // ส่งข้อมูลไปยัง view 'admin.posts.index'
     }
+
+    
     public function adminHome()
     {
         return view('adminHome');

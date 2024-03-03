@@ -67,29 +67,32 @@ class PostsController extends Controller
             'details' => 'required',
             'post_pic' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
-
+    
         $posts = Posts::findOrFail($id);
-
-        if($request->has('post_pic')){
-
+    
+        if($request->hasFile('post_pic')){
             $file = $request->file('post_pic');
             $extension = $file->getClientOriginalExtension();
-
             $filename = time().'.'.$extension;
-
             $path = 'uploads/posts/';
             $file->move($path, $filename);
-
+    
             if(File::exists($posts->post_pic)){
                 File::delete($posts->post_pic);
             }
         }
-
-        $posts->update([
+    
+        $updateData = [
             'topic' => $request->topic,
             'details' => $request->details,
-            'post_pic' => $path.$filename,
-        ]);
+        ];
+    
+        if(isset($filename)){
+            $updateData['post_pic'] = $path.$filename;
+        }
+    
+        $posts->update($updateData);
+        
 
         return redirect()->back()->with('status','Post Update');
     }
@@ -105,4 +108,16 @@ class PostsController extends Controller
 
         return redirect()->back()->with('status','Posts Deleted');
     }
+
+    public function search()
+    {
+        $search_text = $_GET['query'];
+        $posts = Posts::where('topic', 'LIKE', '%' . $search_text . '%')
+              ->orWhere('users_name', 'LIKE', '%' . $search_text . '%')
+              ->get();
+
+
+        return view('posts.index',compact('posts'));
+    }
+
 }

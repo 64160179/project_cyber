@@ -71,3 +71,4 @@ class RegisterController extends Controller
         ]);
     }
 }
+// ทำเพิ่มรูปหน้า register พร้อมเอารูปมาโชว์
